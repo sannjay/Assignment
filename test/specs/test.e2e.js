@@ -1,33 +1,54 @@
 import { expect } from '@wdio/globals'
 import homePage from '../pageobjects/homePage.js'
+import data from '../../test_data/test.json' assert { type: "json" };
 
-describe('Retirement Calculation', () => {
-    it('check for retirement savings', async () => {
-        await (await homePage.currentAge).scrollIntoView();
-        await (await homePage.currentAge).setValue(40);
-        await (await homePage.retirementAge).setValue(68);
-        await (await homePage.annualIncome).click();
-        await (await homePage.annualIncome).setValue(100000);
-        await (await homePage.annualIncomeSpouse).click();
-        await (await homePage.annualIncomeSpouse).setValue(75000);
-        await (await homePage.currentSavingsBalance).scrollIntoView();
-        await (await homePage.currentSavingsBalance).click();
-        await (await homePage.currentSavingsBalance).setValue(500000);
-        await (await homePage.currentContribution).setValue(10);
-        await (await homePage.contributionIncreaseRate).setValue(2);
-        await (await homePage.contributionIncreaseRate).scrollIntoView();
-        await (await homePage.socialSecurity).waitForClickable();
-        await (await homePage.socialSecurity).click();
-        await (await homePage.maritalStatus).waitForClickable();
-        await (await homePage.maritalStatus).click();
-        await (await homePage.socialSecuityOverride).waitForDisplayed();
-        await (await homePage.maritalStatus).scrollIntoView();
-        await (await homePage.socialSecuityOverride).click();
-        await (await homePage.socialSecuityOverride).setValue(4000);
+describe('E2E Retirement Calculation', () => {
+    it('check retirement savings with social security income', async () => {
+        // Enter data for pre retirement calculator fields
+        await homePage.fillPreRetirementFormData(data,0);
+        // Select social security number
+        await homePage.selectSocialSecurityIncome(data);
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(true);
+    })
 
-        await (await homePage.calculateBtn).click();
-        await (await homePage.resultMsg).waitForDisplayed();
-        await expect(await (await homePage.resultMsg).isDisplayed()).toBeTruthy();
+    it('check retirement savings with default calculator values', async () => {
+        // Enter data for pre retirement calculator fields
+        await homePage.fillPreRetirementFormData(data,0);
+        // Select Default Calculator link and Fill the data
+        await homePage.fillDefaultCalculatorData(data);
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(true);
+    })
+
+    it('check retirement savings without social security income', async () => {
+        // Enter data for pre retirement calculator fields
+        await homePage.fillPreRetirementFormData(data,0);
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(true);
+    })
+
+    it('check retirement savings without Filling any Data', async () => {
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(false);
+    })
+
+    it('check boundary value Errors for lower limit', async () => {
+        // Enter data for pre retirement calculator fields
+        await homePage.fillPreRetirementFormData(data,1);
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(false);
+        // Validate boundary Error Messages
+        await homePage.validateBoundaryErrors();
+    })
+
+    it('check boundary value Errors for Upper limit', async () => {
+        // Enter data for pre retirement calculator fields
+        await homePage.fillPreRetirementFormData(data,2);
+        // Click on Calculate Button and validate message
+        await homePage.calculateResult(false);
+        // Validate boundary Error Messages
+        await homePage.validateBoundaryErrors();
     })
 })
 

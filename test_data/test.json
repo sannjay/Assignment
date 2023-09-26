@@ -1,0 +1,18 @@
+{
+    "currentAge": [40,0,999999999],
+    "retirementAge": [68,0,999999999],
+    "annualIncome": [100000,0,999999999],
+    "annualIncomeSpouse": [75000,0,999999999],
+    "currentSavingsBalance": [500000,0,999999999],
+    "currentContribution": [10,0,100],
+    "contributionIncreaseRate": [2,0,10],
+    "socialSecurityIncome": true,
+    "maritalStatus": true,
+    "socialSecuityOverride": 4000,
+    "additionalIncome": 500,
+    "retirementDuration": 20,
+    "expectedInflationRate": 2,
+    "retirementIncome": 75,
+    "preRetirementRoi": 8,
+    "postRetirementRoi": 5
+}

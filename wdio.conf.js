@@ -123,8 +123,12 @@ export const config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
-
+    reporters: ['spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true
+        }],
+    ],
     
     //
     // Options to be passed to Jasmine.
@@ -218,14 +222,18 @@ export const config = {
      * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
      * beforeEach in Mocha)
      */
-    // beforeHook: function (test, context) {
-    // },
+    beforeHook: async function (test, context) {
+        await browser.refresh();
+    },
     /**
      * Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
      * afterEach in Mocha)
      */
-    // afterHook: function (test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterHook: async function (test, context, { error, result, duration, passed, retries }) {
+        if (error) {
+            await browser.takeScreenshot();
+        }
+    },
     /**
      * Function to be executed after a test (in Mocha/Jasmine only)
      * @param {object}  test             test object
@@ -236,8 +244,11 @@ export const config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterTest: async function(test, context, { error, result, duration, passed, retries }) {
+        if (error) {
+            await browser.takeScreenshot();
+        }
+    },
 
 
     /**
@@ -280,7 +291,27 @@ export const config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function(exitCode, config, capabilities, results) {
+    onComplete: function(exitCode, config, capabilities, results) {
+        // onComplete: async function() {
+            const reportError = new Error('Could not generate Allure report')
+            const generation = allure(['generate', 'allure-results', '--clean'])
+            return new Promise((resolve, reject) => {
+                const generationTimeout = setTimeout(
+                    () => reject(reportError),
+                    5000)
+    
+                generation.on('exit', function(exitCode) {
+                    clearTimeout(generationTimeout)
+    
+                    if (exitCode !== 0) {
+                        return reject(reportError)
+                    }
+    
+                    console.log('Allure report successfully generated')
+                    resolve()
+                })
+            })
+        }
     // },
     /**
     * Gets executed when a refresh happens.
