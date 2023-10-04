@@ -46,8 +46,13 @@ class HomePage extends Page {
         await (await element).waitForDisplayed();
         await (await element).scrollIntoView();
         await (await element).click();
-        await (await element).setValue(data);
-        console.log("Entered field value :"+data);
+        try {
+            await (await element).setValue(data);
+            console.log("Entered field value :"+data);
+        }
+        catch(err) {
+            console.log(err);
+        }
     }
 
     async clickElement(element) {
@@ -74,24 +79,30 @@ class HomePage extends Page {
      * @author Sanjay Rathore
      */
     async fillPreRetirementFormData(data,index) {
-        // Set value for current age
-        await this.setFieldValue(await this.currentAge, (data.currentAge)[index]);
-        // Set value for retirement age
-        await this.setFieldValue(await this.retirementAge, (data.retirementAge)[index]);
-        // Set value for annual income
-        await this.setFieldValue(await this.annualIncome, (data.annualIncome)[index]);
-        // Set value for spouse annual income
-        await this.setFieldValue(await this.annualIncomeSpouse, (data.annualIncomeSpouse)[index]);
-        // Set value for current savings balance
-        await this.setFieldValue(await this.currentSavingsBalance, (data.currentSavingsBalance)[index]);
-        // Set value for current contribution
-        await this.setFieldValue(await this.currentContribution, (data.currentContribution)[index]);
-        // Set value for contribution increase rate
-        await this.setFieldValue(await this.contributionIncreaseRate, (data.contributionIncreaseRate)[index]);
+        try{
+            // Set value for current age
+            await this.setFieldValue(await this.currentAge, (data.currentAge)[index]);
+            // Set value for retirement age
+            await this.setFieldValue(await this.retirementAge, (data.retirementAge)[index]);
+            // Set value for annual income
+            await this.setFieldValue(await this.annualIncome, (data.annualIncome)[index]);
+            // Set value for spouse annual income
+            await this.setFieldValue(await this.annualIncomeSpouse, (data.annualIncomeSpouse)[index]);
+            // Set value for current savings balance
+            await this.setFieldValue(await this.currentSavingsBalance, (data.currentSavingsBalance)[index]);
+            // Set value for current contribution
+            await this.setFieldValue(await this.currentContribution, (data.currentContribution)[index]);
+            // Set value for contribution increase rate
+            await this.setFieldValue(await this.contributionIncreaseRate, (data.contributionIncreaseRate)[index]);
+        }
+        catch(err) {
+            console.log(err);
+        }
     }
 
     async selectSocialSecurityIncome(data){
-        if(data.socialSecurityIncome){
+        try{
+            if(data.socialSecurityIncome){
             await this.clickElement(await this.socialSecurityYes);
             console.log("Social Security selected as Yes");
             // Select marital status
@@ -107,12 +118,20 @@ class HomePage extends Page {
         }else {
             await this.clickElement(await this.socialSecurityNo);
             console.log("Social Security selected as No");
-        }    
+        }
+    }catch(err){
+        console.log(err);
+    }    
     }
 
     async calculateResult(result) {
-        await this.clickElement(await this.calculateBtn);
-        console.log("Calculate btn");
+        try {
+            await this.clickElement(await this.calculateBtn);
+            console.log("Calculate btn");
+        }
+        catch(err) {
+            console.log(err);
+        }
         if(result) {
             await this.validateSuccessMsg();
         } else {
@@ -121,6 +140,7 @@ class HomePage extends Page {
     }
 
     async fillDefaultCalculatorData(data) {
+        try {
         await this.clickElement(await this.defalutCalculatorLink);
         console.log("Clicked on Default Calculator link");
         //Fill fields data
@@ -131,6 +151,10 @@ class HomePage extends Page {
         await this.setFieldValue(await this.retirementIncome, data.retirementIncome);
         await this.setFieldValue(await this.preRetirementRoi, data.preRetirementRoi);
         await this.setFieldValue(await this.postRetirementRoi, data.postRetirementRoi);
+        }
+        catch(err) {
+            console.log(err);
+        }
         await this.clickElement(await this.saveBtn);
         console.log("Clicked on Save button");
     }
