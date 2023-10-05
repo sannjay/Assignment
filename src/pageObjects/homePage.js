@@ -36,31 +36,6 @@ class HomePage extends Page {
     get invalidCurrentAge () { return $('#invalid-current-age-error'); }
     get invalidRetirementAge () { return $('#invalid-retirement-age-error'); }
 
-    /**
-     * To Enter field value
-     * @param {*} element 
-     * @param {*} data data value
-     * @author Sanjay Rathore
-     */
-    async setFieldValue (element, data) {
-        await (await element).waitForDisplayed();
-        await (await element).scrollIntoView();
-        await (await element).click();
-        try {
-            await (await element).setValue(data);
-            console.log("Entered field value :"+data);
-        }
-        catch(err) {
-            console.log(err);
-        }
-    }
-
-    async clickElement(element) {
-        await (await element).waitForClickable();
-        await (await element).click();
-        console.log("Clicked on Element");
-    }
-
     async validateSuccessMsg () {
         await (await this.resultMsg).waitForDisplayed();
         await expect(await (await this.resultMsg).isDisplayed()).toBeTruthy();

@@ -1,4 +1,3 @@
-import { expect } from '@wdio/globals'
 import homePage from '../pageobjects/homePage.js'
 import data from '../../testDatamanagement/test.json' assert { type: "json" };
 

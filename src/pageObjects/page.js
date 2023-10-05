@@ -6,10 +6,27 @@ import { browser } from '@wdio/globals'
 */
 export default class Page {
     /**
-    * Opens a sub page of the page
-    * @param path path of the sub page (e.g. /path/to/page.html)
-    */
-    open (path) {
-        return browser.url(`https://the-internet.herokuapp.com/${path}`)
+     * To Enter field value
+     * @param {*} element 
+     * @param {*} data data value
+     * @author Sanjay Rathore
+     */
+    async setFieldValue (element, data) {
+        await (await element).waitForDisplayed();
+        await (await element).scrollIntoView();
+        await (await element).click();
+        try {
+            await (await element).setValue(data);
+            console.log("Entered field value :"+data);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
+
+    async clickElement(element) {
+        await (await element).waitForClickable();
+        await (await element).click();
+        console.log("Clicked on Element");
     }
 }
